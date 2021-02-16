@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zevrant-notification-service-deployment
+  labels:
+    app: zevrant-notification-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zevrant-notification-service
+  template:
+    metadata:
+      labels:
+        app: zevrant-notification-service
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        architecture: amd64
+      containers:
+        - name: zevrant-notification-service
+          image: zevrant/zevrant-notification-service:$VERSION
+          env:
+            - name: PROXY_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-creds
+                  key: proxyCreds
+            - name: ENVIRONMENT
+              value: $ENVIRONMENT
+          ports:
+            - containerPort: 9008
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /zevrant-notification-service/actuator/health
+              port: 9003
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /zevrant-notification-service/actuator/health
+              port: 9003
+            initialDelaySeconds: 10

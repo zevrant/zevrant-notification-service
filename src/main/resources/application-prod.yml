@@ -1,0 +1,10 @@
+server:
+  ssl:
+    key-store: /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-services.p12
+    key-store-type: PKCS12
+    key-store-password: ${password}
+
+zevrant:
+  services:
+    oauth2:
+      url: https://zevrant-oauth2-service
