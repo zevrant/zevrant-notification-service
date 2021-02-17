@@ -31,14 +31,12 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .anonymous().and()
-                .authorizeRequests().antMatchers("/actuator/*", "/webhooks/*").permitAll()
+                .authorizeRequests().antMatchers("/webhooks/**").permitAll().and()
+                .authorizeRequests().antMatchers("/actuator/*").permitAll()
                 .and().csrf().disable();
 
         http
             .addFilterBefore(new OAuthSecurityFilter(this.baseUrl, this.restTemplate, this.authenticationManager), AnonymousAuthenticationFilter.class);
-        // ... more configuration, e.g. for form login
-        super.configure(http);
     }
 
 }

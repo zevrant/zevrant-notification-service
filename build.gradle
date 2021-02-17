@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'net.zevrant-services:zevrant-security-common:0.1.10'
+    implementation 'net.zevrant-services:zevrant-security-common:0.1.11'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation group: 'com.amazonaws', name: 'aws-java-sdk-sns', version: '1.11.955'
 
