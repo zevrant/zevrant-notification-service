@@ -30,12 +30,12 @@ public class WebhookController {
 
     @PostMapping("/serviceDown")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void serviceDown(@RequestBody WebhookRequest webhookRequest) {
+    public void serviceDown() {
 
         try {
             PublishRequest publishRequest = new PublishRequest()
                     .withTopicArn("arn:aws:sns:us-east-1:725235728275:kubernetes-alerts")
-                    .withMessage(webhookRequest.getMessage());
+                    .withMessage("Service Offline");
 
             PublishResult result = snsClient.publish(publishRequest);
             assert (result.getMessageId() != null);
