@@ -32,7 +32,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .anonymous().and()
-                .authorizeRequests().antMatchers("/actuator/*").permitAll()
+                .authorizeRequests().antMatchers("/actuator/*", "/webhooks/*").permitAll()
                 .and().csrf().disable();
 
         http
