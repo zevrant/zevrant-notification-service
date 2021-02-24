@@ -25,7 +25,7 @@ zevrant:
     key-store: /storage/keys/zevrant-services.p12
     key-store-password: ${ssl.keystore.password}
   encrypted:
-    properties: ssl/keystore/password
+    properties: ssl/notification/keystore/password
 
 context:
   initializer:

@@ -2,8 +2,6 @@ FROM zevrant/zevrant-ubuntu-base:latest
 
 EXPOSE 9008
 
-RUN apt-get update && apt-get install -y curl python3 python3-pip && pip3 install awscli --user
-
 RUN mkdir -p /usr/local/microservices/zevrant-home-services/zevrant-notification-service/
 
 RUN mkdir -p /var/log/zevrant-home-services/zevrant-notification-service\
@@ -20,7 +18,8 @@ COPY build/libs/zevrant-notification-service-*.jar /usr/local/microservices/zevr
 RUN mkdir ~/.aws; echo "[default]" > ~/.aws/config; echo "region = us-east-1" >> ~/.aws/config; echo "output = json" >> ~/.aws/config
 
 CMD export ROLE_ARN="arn:aws:iam::725235728275:role/NotificationServiceRole" \
- && export http_proxy=$PROXY_CREDENTIALS@3.210.165.61:3128 \
- && aws s3 cp s3://zevrant-resources/$ENVIRONMENT/ssl/zevrant-notification-service.p12 /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-services.p12 \
- && java -jar -Dspring.profiles.active=$ENVIRONMENT -Dpassword=$password  /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-notification-service.jar
+ && password=`date +%s | sha256sum | base64 | head -c 32` \
+ && curl https://raw.githubusercontent.com/zevrant/zevrant-services-pipeline/master/bash/zevrant-services-start.sh > /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh \
+ && bash /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh $password \
+ && java -jar -Dspring.profiles.active=$ENVIRONMENT -Dpassword=$password /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-notification-service.jar
 
