@@ -17,9 +17,16 @@ COPY build/libs/zevrant-notification-service-*.jar /usr/local/microservices/zevr
 
 RUN mkdir ~/.aws; echo "[default]" > ~/.aws/config; echo "region = us-east-1" >> ~/.aws/config; echo "output = json" >> ~/.aws/config
 
+RUN curl https://raw.githubusercontent.com/zevrant/zevrant-services-pipeline/master/bash/zevrant-services-start.sh > /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh \
+  && curl https://raw.githubusercontent.com/zevrant/zevrant-services-pipeline/master/bash/openssl.conf > ~/openssl.conf \
+  && echo "" \
+  && cat ~/startup.sh \
+  && echo "" \
+  && cat ~/openssl.conf
+
 CMD export ROLE_ARN="arn:aws:iam::725235728275:role/NotificationServiceRole" \
  && password=`date +%s | sha256sum | base64 | head -c 32` \
- && curl https://raw.githubusercontent.com/zevrant/zevrant-services-pipeline/master/bash/zevrant-services-start.sh > /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh \
+ && cat /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh \
  && bash /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh $password \
  && java -jar -Dspring.profiles.active=$ENVIRONMENT -Dpassword=$password /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-notification-service.jar
 
