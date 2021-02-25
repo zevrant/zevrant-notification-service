@@ -26,7 +26,7 @@ RUN curl https://raw.githubusercontent.com/zevrant/zevrant-services-pipeline/mas
 
 CMD export ROLE_ARN="arn:aws:iam::725235728275:role/NotificationServiceRole" \
  && password=`date +%s | sha256sum | base64 | head -c 32` \
- && cat /usr/local/microservices/zevrant-home-services/zevrant-notification-service/openssl.conf \
  && bash /usr/local/microservices/zevrant-home-services/zevrant-notification-service/startup.sh $password \
+ && cat /usr/local/microservices/zevrant-home-services/zevrant-notification-service/openssl.conf \
  && java -jar -Dspring.profiles.active=$ENVIRONMENT -Dpassword=$password /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-notification-service.jar
 
