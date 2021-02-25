@@ -42,6 +42,10 @@ spec:
                   key: proxyCreds
             - name: ENVIRONMENT
               value: $ENVIRONMENT
+            - name: POD_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
           ports:
             - containerPort: 9008
           readinessProbe:
