@@ -1,13 +1,13 @@
-zevrant:
-  services:
-    oauth2:
-      url: https://zevrant-oauth2-service
-  ssl:
-    key-store: /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-services.p12
-    key-store-password: ${password}
-
 server:
   ssl:
     key-store: /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-services.p12
     key-store-type: PKCS12
     key-store-password: ${password}
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: https://zevrant-keycloak-service/auth/realms/zevrant-services

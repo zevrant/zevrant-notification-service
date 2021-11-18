@@ -1,35 +1,51 @@
 
 spring:
+  webflux:
+    base-path: /${spring.application.name}
   profiles:
     active: local
   application:
     name: zevrant-notification-service
   main:
     allow-bean-definition-overriding: true
+  aop:
+    proxy-target-class: true
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: https://localhost:9001/auth/realms/zevrant-services
+        registration:
+          keycloak:
+            client-id: ${zevrant.services.oauth.clientId}
+            client-scret: ${zevrant.services.oauth.clientSecret}
+      resourceserver:
+        jwt:
+          issuer-uri: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}
 
 server:
   ssl:
     key-store: /storage/keys/zevrant-services.p12
-    key-store-password: ${ssl.keystore.password}
-  servlet:
-    context-path: /${spring.application.name}
+    key-store-password: ${password}
   port: 9008
 
 zevrant:
+  unsecured:
+    endpoints: /actuator/health,/actuator/info/,/actuator/prometheus,/webhooks/**
   services:
-    proxy:
-      baseUrl: https://localhost:9001/
-  bucketName: 'zevrant-resources'
-  keystore: 'prod/ssl/keystore.p12'
-  ssl:
-    key-store: /storage/keys/zevrant-services.p12
-    key-store-password: ${ssl.keystore.password}
+    oauth:
+      clientId: ${notifications.oauth.clientId}
+      clientSecret: ${notifications.oauth.clientSecret}
+    email:
+      returnAddress: zevrant@zevrant-services.com
+      addressees: gerethd@gmail.com #comma delimited list
   encrypted:
-    properties: ssl/notification/keystore/password
+    properties: notifications/oauth/clientId,notifications/oauth/clientSecret
 
 context:
   initializer:
-    classes: net.zevrant.services.security.common.secrets.management.services.EncryptedPropertyContextInitializer
+    classes: com.zevrant.services.zevrantsecuritycommon.services.EncryptedPropertyContextInitializer
 
 management:
   endpoints:
@@ -44,5 +60,3 @@ management:
 logging:
   level:
     root: INFO
-    net:
-      zevrant.services.security.common: DEBUG
