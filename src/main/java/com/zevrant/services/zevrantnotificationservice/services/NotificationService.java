@@ -16,7 +16,6 @@ import com.zevrant.services.zevrantnotificationservice.exceptions.InvalidAddress
 import com.zevrant.services.zevrantnotificationservice.exceptions.NotificationTypeNotImplementedException;
 import com.zevrant.services.zevrantnotificationservice.pojo.NotificationType;
 import com.zevrant.services.zevrantnotificationservice.rest.request.Notification;
-import com.zevrant.services.zevrantsecuritycommon.services.AwsSessionCredentialsProvider;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,6 @@ public class NotificationService {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
-    private final AwsSessionCredentialsProvider credentialsProvider;
     private final AmazonSimpleEmailServiceAsync sesClient;
     private final AmazonSNS snsClient;
     private final String returnAddress;
@@ -51,7 +49,6 @@ public class NotificationService {
             }
         }
         this.environment = System.getenv().getOrDefault("ENVIRONMENT", "local");
-        this.credentialsProvider = new AwsSessionCredentialsProvider();
         this.snsClient = AmazonSNSClientBuilder
                 .defaultClient();
         this.sesClient = AmazonSimpleEmailServiceAsyncClientBuilder
@@ -71,22 +68,13 @@ public class NotificationService {
         }
     }
 
-    private BasicSessionCredentials assumeRole() {
-        credentialsProvider.assumeRole(Regions.US_EAST_1.getName(), System.getenv("ROLE_ARN"));
-        return new BasicSessionCredentials(
-                System.getProperty("accessKeyId"),
-                System.getProperty("secretAccessKey"),
-                System.getProperty("sessionToken"));
-    }
-
     private void sendEmailNotification(Notification notification) {
             SendEmailRequest request = new SendEmailRequest()
                     .withDestination(new Destination(Arrays.asList(addressees)))
                     .withMessage(new Message()
                             .withSubject(new Content().withData(notification.getSubject()))
                             .withBody(new Body().withText(new Content().withData(notification.getBody()))))
-                    .withSource(returnAddress)
-                    .withRequestCredentialsProvider(new AWSStaticCredentialsProvider(assumeRole()));
+                    .withSource(returnAddress);
 
             sesClient.sendEmailAsync(request,
                     new AsyncHandler<>() {
@@ -130,8 +118,7 @@ public class NotificationService {
 
             PublishRequest publishRequest = new PublishRequest()
                     .withTopicArn("arn:aws:sns:us-east-1:725235728275:kubernetes-alerts")
-                    .withMessage(messageBuilder.toString())
-                    .withRequestCredentialsProvider(new AWSStaticCredentialsProvider(assumeRole()));
+                    .withMessage(messageBuilder.toString());
 
             PublishResult result = snsClient.publish(publishRequest);
             assert (result.getMessageId() != null);
