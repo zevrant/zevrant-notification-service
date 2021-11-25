@@ -65,3 +65,10 @@ spec:
               path: /zevrant-notification-service/actuator/health
               port: 9008
             initialDelaySeconds: 10
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 100m
+            limits:
+              memory: 4Gi
+              cpu: 500m

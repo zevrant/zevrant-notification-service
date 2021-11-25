@@ -22,5 +22,6 @@ RUN curl https://raw.githubusercontent.com/zevrant/zevrant-services-pipeline/mas
 
 CMD password=`date +%s | sha256sum | base64 | head -c 32` \
  && bash ~/startup.sh zevrant-notification-service $password \
- && java -jar -Dspring.profiles.active=$ENVIRONMENT -Dpassword=$password /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-notification-service.jar
+ && java -jar -XX:MinRAMPercentage=25 -XX:MaxRAMPercentage=90 -Dspring.profiles.active=$ENVIRONMENT -Dpassword=$password \
+        /usr/local/microservices/zevrant-home-services/zevrant-notification-service/zevrant-notification-service.jar
 
