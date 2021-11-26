@@ -58,13 +58,13 @@ spec:
               scheme: HTTPS
               path: /zevrant-notification-service/actuator/health
               port: 9008
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
           livenessProbe:
             httpGet:
               scheme: HTTPS
               path: /zevrant-notification-service/actuator/health
               port: 9008
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
           resources:
             requests:
               memory: 1Gi
