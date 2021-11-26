@@ -12,7 +12,6 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/notifications")
-//@PreAuthorize("hasPermission('prints')")
 public class NotificationsController {
 
     private final NotificationService notificationService;
