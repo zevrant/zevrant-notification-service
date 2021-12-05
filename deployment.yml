@@ -27,6 +27,10 @@ spec:
       labels:
         app: zevrant-notification-service
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
       imagePullSecrets:
         - name: regcred
       nodeSelector:
