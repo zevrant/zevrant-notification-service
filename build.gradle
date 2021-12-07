@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'com.zevrant.services:zevrant-security-common:4'
+    implementation 'com.zevrant.services:zevrant-security-common:6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.15.2'
 
