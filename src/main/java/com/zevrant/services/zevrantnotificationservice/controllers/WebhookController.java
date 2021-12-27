@@ -1,8 +1,8 @@
 package com.zevrant.services.zevrantnotificationservice.controllers;
 
 import com.zevrant.services.zevrantnotificationservice.pojo.NotificationType;
-import com.zevrant.services.zevrantnotificationservice.rest.request.Notification;
 import com.zevrant.services.zevrantnotificationservice.services.NotificationService;
+import com.zevrant.services.zevrantuniversalcommon.rest.notification.request.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

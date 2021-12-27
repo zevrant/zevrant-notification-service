@@ -15,7 +15,7 @@ import com.amazonaws.services.sns.model.PublishResult;
 import com.zevrant.services.zevrantnotificationservice.exceptions.InvalidAddresseeException;
 import com.zevrant.services.zevrantnotificationservice.exceptions.NotificationTypeNotImplementedException;
 import com.zevrant.services.zevrantnotificationservice.pojo.NotificationType;
-import com.zevrant.services.zevrantnotificationservice.rest.request.Notification;
+import com.zevrant.services.zevrantuniversalcommon.rest.notification.request.Notification;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
