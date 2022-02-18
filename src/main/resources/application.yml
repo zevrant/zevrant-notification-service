@@ -19,7 +19,7 @@ spring:
         registration:
           keycloak:
             client-id: ${zevrant.services.oauth.clientId}
-            client-scret: ${zevrant.services.oauth.clientSecret}
+            client-secret: ${zevrant.services.oauth.clientSecret}
       resourceserver:
         jwt:
           issuer-uri: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}
