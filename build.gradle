@@ -20,17 +20,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.zevrant.services:zevrant-universal-common:3'
-    implementation 'com.zevrant.services:zevrant-security-common:9'
+    implementation 'com.zevrant.services:zevrant-universal-common:8'
+    implementation 'com.zevrant.services:zevrant-security-common:11'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.8.1'
-    implementation 'com.nimbusds:nimbus-jose-jwt:9.15.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.8.2'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.19'
 
-    implementation 'com.amazonaws:aws-java-sdk-sns:1.12.130'
-    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.130'
+    implementation 'com.amazonaws:aws-java-sdk-sns:1.12.154'
+    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.150'
 
 
 

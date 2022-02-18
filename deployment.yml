@@ -49,6 +49,16 @@ spec:
                 secretKeyRef:
                   name: zevrant-notification-service-aws
                   key: password
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backup-vault-credentials
+                  key: password
+            - name: ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backup-vault-credentials
+                  key: username
             - name: ENVIRONMENT
               value: $ENVIRONMENT
             - name: POD_IP
