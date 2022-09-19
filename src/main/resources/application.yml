@@ -40,6 +40,8 @@ zevrant:
     email:
       returnAddress: zevrant@zevrant-services.com
       addressees: gerethd@gmail.com #comma delimited list
+    discord:
+      url: ${notifications.discord.url}
   encrypted:
     properties: notifications/oauth/clientId,notifications/oauth/clientSecret
 

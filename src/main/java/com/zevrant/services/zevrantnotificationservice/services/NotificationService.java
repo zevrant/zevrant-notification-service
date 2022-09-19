@@ -12,6 +12,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.zevrant.services.zevrantnotificationservice.exceptions.DiscordPostException;
 import com.zevrant.services.zevrantnotificationservice.exceptions.InvalidAddresseeException;
 import com.zevrant.services.zevrantnotificationservice.exceptions.NotificationTypeNotImplementedException;
 import com.zevrant.services.zevrantnotificationservice.pojo.NotificationType;
@@ -22,7 +23,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -31,15 +37,34 @@ public class NotificationService {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
+    private static final String discordNotificationTemplate = "{\n" +
+            "\t\"name\": \"application-notification\",\n" +
+            "\t\"embeds\": [\n" +
+            "\t\t{\n" +
+            "\t\t\t\"title\": \"<TITLE>\",\n" +
+            "\t\t\t\"url\": \"https://zevrant-services.com\",\n" +
+            "\t\t\t\"color\": 14177041,\n" +
+            "\t\t\t\"description\": \"<ERROR_CONTENT>\",\n" +
+            "\t\t\t\"thumbnail\": {\n" +
+            "\t\t\t\t\"url\": \"<WEBHOOK_URL>\"\n" +
+            "\t\t\t}\n" +
+            "\t\t}\n" +
+            "\t]\n" +
+            "}";
+
     private final AmazonSimpleEmailServiceAsync sesClient;
     private final AmazonSNS snsClient;
     private final String returnAddress;
     private final String[] addressees;
     private final String environment;
+    private final WebClient webClient;
+    private final URI discordURI;
 
     @Autowired
     public NotificationService(@Value("${zevrant.services.email.returnAddress}") String returnAddress,
-                               @Value("${zevrant.services.email.addressees}") String[] addressees) {
+                               @Value("${zevrant.services.email.addressees}") String[] addressees,
+                               @Value("${zevrant.services.discord.url}") String discordUrl,
+                               WebClient webClient) {
         this.returnAddress = returnAddress;
         this.addressees = addressees;
         Pattern emailPattern = Pattern.compile("[\\w\\d\\-_]+@[\\w\\d\\-_]+\\.[\\w\\d\\-_]+");
@@ -53,19 +78,37 @@ public class NotificationService {
                 .defaultClient();
         this.sesClient = AmazonSimpleEmailServiceAsyncClientBuilder
                 .defaultClient();
+        this.webClient = webClient;
+        this.discordURI = URI.create(discordUrl);
     }
 
-    public void sendNotification(Notification notification, NotificationType type) {
+    public Mono<?> sendNotification(Notification notification, NotificationType type) {
         switch (type) {
-            case SNS:
-                sendSnsNotification(notification);
-                break;
             case EMAIL:
                 sendEmailNotification(notification);
                 break;
-            default:
-                throw new NotificationTypeNotImplementedException("Notifications of type " + type.name() + " have not been implemented");
+            case SNS:
+                throw new RuntimeException("No longer supported, please use discord instead");
+            case DISCORD:
+                return sendDiscordNotification(notification);
         }
+        return Mono.empty();
+    }
+
+    private Mono<String> sendDiscordNotification(Notification notification) {
+        String notificationContent = notification.getBody().replace("\\", "\\\\\"");
+        return webClient.post()
+                .uri(discordURI)
+                .body(BodyInserters.fromValue(
+                    discordNotificationTemplate
+                            .replace("<TITLE>", notification.getTitle())
+                            .replace("<WEBHOOK_URL>", "https://zevrant-services.com")
+                            .replace("<ERROR_CONTENT>", notificationContent)
+                ))
+                .retrieve()
+                .bodyToMono(String.class)
+                .onErrorResume(DiscordPostException.class,
+                        ex -> ex.getRawStatusCode() == 404 ? Mono.empty() : Mono.error(ex));
     }
 
     private void sendEmailNotification(Notification notification) {

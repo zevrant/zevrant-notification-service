@@ -5,7 +5,8 @@ import java.util.stream.Collectors;
 
 public enum NotificationType {
     SNS,
-    EMAIL;
+    EMAIL,
+    DISCORD;
 
     NotificationType() {
     }
@@ -21,4 +22,5 @@ public enum NotificationType {
         return !Objects.isNull(type)
             && listOf().contains(type.toUpperCase(Locale.ROOT));
     }
+
 }

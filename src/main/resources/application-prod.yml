@@ -11,3 +11,10 @@ spring:
         provider:
           keycloak:
             issuer-uri: https://zevrant-services.com/auth/realms/zevrant-services-prod
+
+zevrant:
+  keystore:
+    password: /var/zevrant-services/keystore/password
+  vault:
+    username: /var/zevrant-services/vault/username
+    password: /var/zevrant-services/vault/password

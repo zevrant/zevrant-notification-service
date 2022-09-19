@@ -28,11 +28,10 @@ public class NotificationsController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('notifications')")
-    public Mono<Void> sendNotification(@RequestBody Notification notification,
+    public Mono<?> sendNotification(@RequestBody Notification notification,
                                        @RequestHeader(value = "NOTIFICATION_TYPE", required = false) String notificationType) {
-        notificationService.sendNotification(notification, (NotificationType.isValidType(notificationType))?
+        return notificationService.sendNotification(notification, (NotificationType.isValidType(notificationType))?
                 NotificationType.valueOf(notificationType.toUpperCase(Locale.ROOT))
-                : NotificationType.SNS);
-        return Mono.empty();
+                : NotificationType.DISCORD);
     }
 }
